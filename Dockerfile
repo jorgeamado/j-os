@@ -1,5 +1,5 @@
 FROM ubuntu
-COPY ./How-to-Make-a-Computer-Operating-System/src/ /src
+VOLUME /src
 WORKDIR /src
 RUN apt-get update && apt-get install -y \ 
 	nasm \
