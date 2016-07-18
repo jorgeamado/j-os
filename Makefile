@@ -1,6 +1,6 @@
 DOCKER_IMAGE_NAME=jorge.137/j-os
 DOCKER_CONTAINER_NAME=test-j-os-container
-SRC_DIR=$(shell pwd)/src
+SRC_DIR=$(CURDIR)/src
 DOCKER_RUN_PARAMS=-it --rm  --privileged=true -v $(SRC_DIR):/src --name $(DOCKER_CONTAINER_NAME)
 
 build-image:

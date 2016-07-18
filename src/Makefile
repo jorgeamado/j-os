@@ -1,8 +1,9 @@
+ASM_FILE=boot_sect.asm
+BIN_FILE=boot.sect.bin
 
 build : 
-	@nasm -f bin -o boot.sect.bin boot_sect.asm
-run : 
-	@nasm -f bin -o boot.sect.bin boot_sect.asm
-	@qemu-system-i386 -drive format=raw,file=boot.sect.bin -curses
+	@nasm -f bin -o $(BIN_FILE) $(ASM_FILE)
+run : build
+	@qemu-system-i386 -drive format=raw,file=$(BIN_FILE) -curses
 clean : 
-	@rm boot.sect.bin
+	@rm $(BIN_FILE)
