@@ -4,7 +4,7 @@ SRC_DIR=$(CURDIR)/src
 DOCKER_RUN_PARAMS=-it --rm  --privileged=true -v $(SRC_DIR):/src --name $(DOCKER_CONTAINER_NAME)
 
 build-image:
-	@docker build -t $(DOCKER_IMAGE_NAME) .
+	@docker build --no-cache -t $(DOCKER_IMAGE_NAME) .
 
 remove-image:
 	@echo Removing Docker image...
