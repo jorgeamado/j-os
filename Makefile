@@ -10,8 +10,15 @@ remove-image:
 	@echo Removing Docker image...
 	@docker rmi $(DOCKER_IMAGE_NAME)
 
-run-container: build-image
+quick-run:	
 	@echo Starting Docker container...
 	@echo docker run $(DOCKER_RUN_PARAMS) $(DOCKER_IMAGE_NAME) /bin/bash
 	@docker run $(DOCKER_RUN_PARAMS) $(DOCKER_IMAGE_NAME) /bin/bash
 
+run-container: build-image && quick-run
+
+# hotkeys
+bi: build-image
+rmi: remove-image
+runc: run-container
+qr: quick-run
