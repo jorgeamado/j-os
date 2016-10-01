@@ -15,7 +15,7 @@ quick-run:
 	@echo docker run $(DOCKER_RUN_PARAMS) $(DOCKER_IMAGE_NAME) /bin/bash
 	@docker run $(DOCKER_RUN_PARAMS) $(DOCKER_IMAGE_NAME) /bin/bash
 
-run-container: build-image && quick-run
+run-container: build-image quick-run
 
 # hotkeys
 bi: build-image
