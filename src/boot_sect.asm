@@ -1,19 +1,34 @@
-;;[org 0x7c00]
+[org 0x7c00]
+	mov [BOOT_DRIVE], dl ;BIOS stores our boot drive in DL, so it’s
+						; best to remember this for later.
+mov bp, 0x8000 ; Here we set our stack safely out of the way, at 0x8000
+mov sp, bp ;
+mov bx, 0x9000 ; 
+mov dh, 5 ; Load 5 sectors to 0x0000(ES):0x9000(BX) from the boot disk.
 
-	mov bx, 0x7c0 	; set data segment to 0x7c0 to tell CPU
-	mov ds, bx		; use addresses ds*16 == 0x7c00 + [addres]
-					; it will make same thing like [org 0x7c00]
+mov dl, [BOOT_DRIVE] 
+call disk_load
 
-	mov dx,  [NUM]
-	call print_hex
+mov dx, [0x9000] 
+call print_hex
+mov dx , [0x9000 + 512]
+call print_hex
+jmp $
 
-	jmp $
+; Print out the first loaded word, which
+; we expect to be 0xdada , stored
+; at address 0x9000
+ ; Also, print the first word from the ; 2nd loaded sector: should be 0xface
 
-	NUM: dw 0x1234 ;NUM as a pointer to word
 
 	%include "tools/print_str_func.asm"
 	%include 'tools/print_hex_func.asm'
-	
+	%include 'tools/disk_load.asm'
+
+	BOOT_DRIVE: db 0
+
 	times 510-($-$$) db 0
 	dw 0xaa55
 	
+times 256 dw 0xdada
+times 256 dw 0xface
