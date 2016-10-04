@@ -1,34 +1,29 @@
+; A boot sector that enters 32-bit protected mode. 
 [org 0x7c00]
-	mov [BOOT_DRIVE], dl ;BIOS stores our boot drive in DL, so it’s
-						; best to remember this for later.
-mov bp, 0x8000 ; Here we set our stack safely out of the way, at 0x8000
-mov sp, bp ;
-mov bx, 0x9000 ; 
-mov dh, 5 ; Load 5 sectors to 0x0000(ES):0x9000(BX) from the boot disk.
+	mov bp, 0x9000 	; Set the stack.
+	mov sp, bp
 
-mov dl, [BOOT_DRIVE] 
-call disk_load
-
-mov dx, [0x9000] 
-call print_hex
-mov dx , [0x9000 + 512]
-call print_hex
-jmp $
-
-; Print out the first loaded word, which
-; we expect to be 0xdada , stored
-; at address 0x9000
- ; Also, print the first word from the ; 2nd loaded sector: should be 0xface
-
+	mov bx, MSG_REAL_MODE 
+	call print_string
+	
+	call switch_to_pm ; Note that we never return from here.
+	jmp $
 
 	%include "tools/print_str_func.asm"
-	%include 'tools/print_hex_func.asm'
-	%include 'tools/disk_load.asm'
+	%include "gdt.asm"
+	%include "print_string_pm.asm" 
+	%include "switch_to_pm.asm"
+[bits 32]
 
-	BOOT_DRIVE: db 0
+; This is where we arrive after switching to and initialising protected mode.
+BEGIN_PM:
+	mov ebx, MSG_PROT_MODE
+	call print_string_pm ; Use our 32-bit print routine. jmp $ ; Hang.
 
-	times 510-($-$$) db 0
-	dw 0xaa55
-	
-times 256 dw 0xdada
-times 256 dw 0xface
+; Global variables
+MSG_REAL_MODE db "Started in 16-bit Real Mode", 0
+MSG_PROT_MODE db "Successfully landed in 32-bit Protected Mode", 0
+
+; Bootsector padding 
+times 510-($-$$) db 0 
+dw 0xaa55
